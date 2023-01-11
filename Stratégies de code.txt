@@ -1,0 +1,37 @@
+				****** Strat de code *******
+
+Dictionnaire :
+
+'Plateau' : Liste de 13 'lieu'
+
+Chaque lieu est une liste :
+	- Oème élément : l'id
+	- 1ème élément : l'aumone
+	- 2ème élément : Cout en fidele
+	- 3ème élément : Matrice prètres_sur_lieu
+
+Matrice prètres_sur_lieu : Matrice (nb_joueurs*7) (on met 1 si patriarche, et +1 ds chaque catégorie
+			de prètres., derniere case : booleen pour lautel)
+
+
+Joueur : Liste de 
+
+	- Oème élément : id
+	-1er élément : id_culte
+	-2eme élément : Nb_fideles
+	-3eme element : Nb_pieces
+	-4ème élément : Liste prètres dispos : Liste de 6 entiers entre 0 et 3 (sauf patriarche)
+	-5ème élement : Liste_pretres_totaux : Le nom est explicite
+	-6ème élément : Liste_pretres gratuits: liste de 16 éléments, les 3 premiers valent 1
+	-7ème élément : Nb_pretres posés
+	-8ème élément : Booléen pour savoir si couché ou non
+	-9ème élément : Nb_autels
+	-10ème élément : Nb_foules
+	-11ème élément : Bool Etat_culte
+	-12,13,14eme élément : Les listes de cartes (vides de base)
+
+
+
+
+
+
