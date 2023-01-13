@@ -1,6 +1,6 @@
 import pygame
 
-%le Ziz 2
+#le Ziz 2
 pygame.init()
 
 icon = pygame.image.load('assets/Arts/Culte-main-keyart.jpg')
