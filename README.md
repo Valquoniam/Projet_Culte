@@ -1,6 +1,5 @@
 # Projet_Culte
 
-
 ## requirements
 
 - nodejs
@@ -27,5 +26,5 @@ npm start
 
 ## start the game
 
-- open a browser at http://localhost:3000
+- open a browser at <http://localhost:3000>
 - click on "start game" [...]
