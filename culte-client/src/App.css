@@ -72,7 +72,7 @@ textarea {
   margin: 1rem;
   cursor: pointer;
 
-  /* resize: none; */
+  resize: none;
   width: 90%;
 
 }

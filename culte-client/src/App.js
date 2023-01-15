@@ -28,23 +28,73 @@ function onConnect() {
     }
   }
   client.connect(serverAddress, serverPort);
+  
 }
 
 
 function onChatMessage(event) {
   if (event.key === "Enter") {
     const chat = document.getElementsByName("chat")[0].value;
+
     if (chat === "") {
       return;
     }
 
-    const msg = {
-      type: "message",
-      content: chat,
-    };
+    // syntax: /command arg1 arg2 ...
+    if (chat.startsWith("/")) {
+      log(chat + "\n");
+      const cmd = chat.substring(1).split(" ")[0];
 
-    client.send(JSON.stringify(msg));
+      // syntax: /help
+      if (cmd === "help") {
+        log("Help:");
+        log("Available commands:");
+        log("/exit - disconnect from server");
+        log("/name <name> - change your name");
+        log("/help - show this message\n");
+      }
+
+      // syntax: /exit
+      else if (cmd === "exit") {
+        client.send(JSON.stringify({
+          type: "exit",
+        }));
+      }
+
+      // syntax: /name <name>
+      else if (cmd === "name") {
+        const name = chat.substring(6);
+        if (name === "") {
+          log("Invalid name\n");
+        }
+        else {
+          client.send(JSON.stringify({
+            type: "name",
+            content: name,
+          }));
+
+
+        }
+
+      }
+      else {
+        log("Unknown command, type /help for help\n");
+      }
+    }
+    else {
+
+      // Send chat message
+      client.send(JSON.stringify({
+        type: "message",
+        content: chat,
+      }));
+    }
+
+    // clear chat input
     document.getElementsByName("chat")[0].value = "";
+
+    // auto scroll
+    document.getElementsByName("log")[0].scrollTop = document.getElementsByName("log")[0].scrollHeight;
   }
 }
 
@@ -87,10 +137,10 @@ function ConnectionMenu() {
 
 function MainMenu() {
   return (
-      <div className="MainMenu">
-        <h1>Culte Web</h1>
-        <ConnectionMenu />
-        <div className="BackgroundImage">
+    <div className="MainMenu">
+      <h1>Culte Web</h1>
+      <ConnectionMenu />
+      <div className="BackgroundImage">
       </div>
     </div>
   );
