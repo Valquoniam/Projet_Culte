@@ -1,3 +1,4 @@
 # code editors
 *.idea
 *.vscode
+*.log
