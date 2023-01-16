@@ -1,25 +1,28 @@
-import logo from './logo.svg';
+import React from 'react';
 import './App.css';
+import MainMenu from './components/MainMenu';
+import Game from './components/Game';
+import { client } from './scripts/client';
+
+
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+  if (client.gameStarted) {
+    return (
+      <div className="App">
+        <Game />
+      </div>
+    );
+  }
+
+  else {
+    return (
+      <div className="App">
+        <MainMenu />
+      </div>
+    );
+  }
+
 }
 
 export default App;
