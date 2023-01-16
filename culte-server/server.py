@@ -8,32 +8,10 @@ import asyncio
 import time
 import json
 
+from client import Client
+
 logging.basicConfig(filename='server.log', level=logging.DEBUG,
                     format='%(asctime)s:%(levelname)s:%(message)s')
-
-
-class Client(object):
-    """Represents a client connected to the server.
-    """
-
-    def __init__(self, websocket, name):
-        self.websocket = websocket
-        self.name = name
-
-    def __str__(self):
-        return f'{self.name} ({self.websocket.remote_address})'
-
-    def __repr__(self):
-        return f'Client({self.websocket}, {self.name})'
-
-    def __eq__(self, other):
-        return self.websocket == other.websocket
-
-    def __hash__(self):
-        return hash(self.websocket)
-
-    def __ne__(self, other):
-        return not self.__eq__(other)
 
 
 class Server(object):
@@ -52,6 +30,13 @@ class Server(object):
 
         # log infos about the server
         logging.info('Server started on %s:%s' % (self.host, self.port))
+
+        self.type_handlers = {
+            'message': self.handle_message,
+            'name': self.handle_name,
+            'start': self.handle_start,
+            'exit': self.handle_exit,
+        }
 
     async def send(self, client: Client, msg: dict):
         """Sends a message to a client.
@@ -90,6 +75,54 @@ class Server(object):
         else:
             logging.warning(f'[DISCONNECT] {client} not found')
 
+    async def handle_message(self, client: Client, msg: dict):
+        to_send = {
+            'type': 'message',
+            'content': msg['content'],
+            'author': client.name
+        }
+        await self.broadcast(to_send)
+
+    async def handle_name(self, client: Client, msg: dict):
+        new_name = msg['content']
+
+        to_send = {
+            'type': 'message',
+            'content': f'{client.name} changed his name to {new_name}',
+            'author': 'SERVER',
+        }
+        client.name = new_name
+        await self.broadcast(to_send)
+
+    async def handle_start(self, client: Client, msg: dict):
+        if client == self.clients[0]:
+
+            if 3 <= len(self.clients) <= 5:
+            # if len(self.clients): # temporary
+                to_send = {
+                    'type': 'start',
+                    'content': f'Game started by {client.name}',
+                    'author': 'SERVER',
+                }
+            else:
+                to_send = {
+                    'type': 'message',
+                    'content': f'You need at least 3 players to start the game',
+                    'author': 'GAME',
+                }
+            await self.broadcast(to_send)
+
+        else:
+            to_send = {
+                'type': 'message',
+                'content': f'Only {self.clients[0].name} can start the game',
+                'author': 'SERVER',
+            }
+            await self.send(client, to_send)
+
+    async def handle_exit(self, client: Client, msg: dict):
+        self.runnning = False
+
     async def handle(self, websocket, path, client: Client):
         """Handles the communication with a client.
 
@@ -107,8 +140,9 @@ class Server(object):
 
         types:
             - message : sends a message to all clients
-            - name : changes the client's name, sends a message to all clients
-            - exit : disconnects the client, sends a message to all clients
+            - name : changes the client's name, sends a message to all clients.
+            - exit : disconnects the client, sends a message to all clients.
+            - start : starts the game. Only the first client can start the game.
 
         disconnects at the end of the function
         """
@@ -121,29 +155,7 @@ class Server(object):
                 logging.info(f'[RECV][{client.name}] {msg}')
 
                 # handle the message
-                if msg['type'] == 'message':
-                    to_send = {
-                        'type': 'message',
-                        'content': msg['content'],
-                        'author': client.name
-                    }
-                    await self.broadcast(to_send)
-
-                # change the client's name
-                elif msg['type'] == 'name':
-                    new_name = msg['content']
-
-                    to_send = {
-                        'type': 'message',
-                        'content': f'{client.name} changed his name to {new_name}',
-                        'author': 'SERVER',
-                    }
-                    client.name = new_name
-                    await self.broadcast(to_send)
-
-                # disconnect the client
-                elif msg['type'] == 'exit':
-                    break
+                await self.type_handlers[msg['type']](client, msg)
 
             except ConnectionResetError:
                 logging.warning(f'[RECV][{client.name}] Connection reset')
@@ -183,6 +195,12 @@ class Server(object):
         await self.broadcast({
             'type': 'message',
             'content': f'"{client.name}", Welcome to the server!',
+            'author': 'SERVER',
+        })
+
+        await self.broadcast({
+            'type': 'message',
+            'content': f'{len(self.clients)} players connected, required to start: [3-5]',
             'author': 'SERVER',
         })
 

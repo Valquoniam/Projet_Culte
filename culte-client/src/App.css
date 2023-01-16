@@ -1,9 +1,23 @@
-/* dark theme */
+/* TODO: rework everything */
+
+
 @import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap');
+
+.App {
+  text-align: center;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  height: 100%;
+}
 
 /* blur background image */
 .BackgroundImage {
-  background-image: url('../public/castle.jpg');
+  background-image: url('assets/castle.png');
   filter: blur(5px);
 
   background-position: center;
@@ -28,6 +42,9 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+
+  width: 100%;
+  height: 100%;
 }
 
 h1 {
@@ -59,7 +76,7 @@ button:active {
   color: #fff;
 }
 
-textarea {
+.log {
   font-size: 1rem;
   font-weight: 500;
   color: #fff;
@@ -68,16 +85,18 @@ textarea {
   border: 1px solid #fff;
   border-radius: 10px;
 
-  padding: 0.5rem 1rem;
   margin: 1rem;
   cursor: pointer;
 
   resize: none;
-  width: 90%;
 
+  width: 95%;
+  height: 50vh;
+
+  overflow: auto;
 }
 
-textarea:hover {
+.log:hover {
   background-color: #222;
 }
 
@@ -113,4 +132,78 @@ input {
 
   /* transparent background */
   background-color: rgba(0, 0, 0, 0.5);
+}
+
+.PlaceCardImage {
+  max-width: 100%;
+  max-height: 100%;
+
+  object-fit: cover;
+}
+
+.PlaceCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 0;
+  min-height: 0;
+}
+
+.PlaceGrid {
+  width: 100%;
+  height: 100%;
+
+  display: grid;
+  grid-template-rows: repeat(3, 1fr);
+  grid-template-columns: repeat(3, 1fr);
+
+  grid-gap: 1rem;
+  margin: 1rem;
+
+}
+
+.Game {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  height: 100%;
+
+  border: 1px solid #fff;
+  border-radius: 10px;
+
+  /* transparent background */
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.GameMenu {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  
+
+  width: 100%;
+  height: 100%;
+}
+
+
+.GameChat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  width: 20vw;
+  height: auto;
+  
+  margin: 1rem;
+
+  border: 1px solid #fff;
+  border-radius: 10px;
+
 }
